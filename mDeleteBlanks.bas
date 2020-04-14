@@ -1,35 +1,31 @@
 Attribute VB_Name = "mDeleteBlanks"
 Option Explicit
 
-Public Sub new_delete_blanks()
+Public Sub delete_blanks()
 On Error GoTo ErrorHandler
     Dim lastrow As Long
     Dim rngFirstCell As Range
-    Dim i As Integer, s As Long
-    Dim cellValue As Variant
+    Dim i As Integer
+    Dim arrData As Variant
     Dim numerator As Long
+    Dim numRow As Integer, numColumn As Integer
     
     Set rngFirstCell = Application.InputBox("Please select first cell of column " & _
       "with empty range", Type:=8)
     lastrow = rngFirstCell.CurrentRegion.Rows.Count
-    cellValue = rngFirstCell.Value
+    numRow = rngFirstCell.Row
+    numColumn = rngFirstCell.Column
+    arrData = Range(Cells(numRow, numColumn), _
+              Cells(lastrow + numRow - 1, numColumn)).Value
     numerator = 0
-    i = 0
+    i = lastrow
     
-    Do Until i > lastrow
-      cellValue = rngFirstCell.Offset(i, 0).Value
-        If Len(cellValue) = 0 Then
-          s = i
-          Do Until Len(cellValue) > 0 Or s > lastrow
-            rngFirstCell.Offset(i, 0).EntireRow.Delete
-            cellValue = rngFirstCell.Offset(i, 0).Value
-            s = s + 1
+    Do Until i = 1
+        If Len(arrData(i, 1)) = 0 Then
+            rngFirstCell.Offset(i - 1, 0).EntireRow.Delete
             numerator = numerator + 1
-          Loop
-          s = 0
         End If
-        lastrow = rngFirstCell.CurrentRegion.Rows.Count
-        i = i + 1
+        i = i - 1
     Loop
 
 MsgBox prompt:="well! delete" & " " & numerator & " " & "empty range"
